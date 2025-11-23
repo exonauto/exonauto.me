@@ -28,27 +28,26 @@ const startHtml = `
     <meta name="twitter:description" content="{{headline}}">
     <meta name="twitter:image" content="https://exonauto.me/blogs{{image}}.png">
 
-    <link href="/echo.css" rel="stylesheet">
-    <link href="/retro.css" rel="stylesheet">
+    <link href="/css/echo.css" rel="stylesheet">
+    <link href="/css/retro.css" rel="stylesheet">
   </head>
   
-
-    <body>
-        <div>
-        <nav class="true">
+  <body>
+    <div>
+      <nav class="true">
         <h2>ExonAuto.me</h2>
-            <a style="text-decoration: underline;" href="/">Home</a>
-            <a style="text-decoration: underline;" href="/blog">Blog</a>
-            <a style="text-decoration: underline;" href="https://sketchyfile.download?refer=exonauto.me">Soon</a>
-        </nav>
-        <hr>
-        <br>
-        </div>
+        <a style="text-decoration: underline;" href="/">Home</a>
+        <a style="text-decoration: underline;" href="/blog">Blog</a>
+        <a style="text-decoration: underline;" href="https://sketchyfile.download?refer=exonauto.me">Soon</a>
+      </nav>
+      <hr>
+      <br>
+    </div>
 
-        <div class="true" id="blogMain">
-            <h2>{{title}}</h2>
-            <hr>
-            <div id="content" class="content">
+    <div class="true" id="blogMain">
+      <h2>{{title}}</h2>
+      <hr>
+      <div id="content" class="content">
 `
 
 const endHtml = `
@@ -67,4 +66,5 @@ function on(html) {
 function off() {
     document.getElementById('overlayWrap').style.display = 'none';
     document.getElementById('overlay').srcdoc = "";
-}  
+}
+off();
