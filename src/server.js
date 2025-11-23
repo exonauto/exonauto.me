@@ -21,6 +21,8 @@ const __dirname = path.dirname(__filename);
 
 const app = express();
 
+app.set('trust proxy', true);
+
 app.use(express.urlencoded({ extended: false }));
 app.use(express.json());
 
@@ -45,7 +47,7 @@ app.use('/index/*', (req, res) => {
 const log = (req, res, next) => {
   let d = new Date();
   const hex = chalk.hex(stringToColor(req.originalUrl));
-  console.log(hex(`req ${req.method} ${req.originalUrl} by ${req.headers['cf-connecting-ip'] ? req.headers['cf-connecting-ip'] : req.ip} @ ${d.toLocaleString()}`))
+  console.log(hex(`req ${req.method} ${req.originalUrl} by ${req.headers['CF-Connecting-IP'] ? req.headers['CF-Connecting-IP'] : req.ip} @ ${d.toLocaleString()}`))
   next()
 }
 
