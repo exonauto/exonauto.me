@@ -31,22 +31,28 @@ app.use(session({
 }));
 
 app.use(express.static('../app/dist/'))
-app.use(express.static('../app/dist/'));
-app.use('/index', serveIndex('../app/dist/', {'icons': true}));
-
 app.use(express.static('../generated/'))
 
-app.use('/api', api)
-app.use('/blog', blog)
+app.use('/index', serveIndex('../app/dist/', { icons: true, directory:'/' }));
+
+app.use('/index/*', (req, res) => {
+  if (req.originalUrl == "/index") return res.status(200).res.redirect('/index');
+
+  const target = req.originalUrl.replace(/^\/index/, '') || '/index';
+  return res.redirect(302, target);
+});
 
 const log = (req, res, next) => {
   let d = new Date();
   const hex = chalk.hex(stringToColor(req.originalUrl));
-  console.log(hex(`req ${req.method} ${req.originalUrl} by ${req.ip} @ ${d.toLocaleString()}`))
+  console.log(hex(`req ${req.method} ${req.originalUrl} by ${req.headers['cf-connecting-ip'] ? req.headers['cf-connecting-ip'] : req.ip} @ ${d.toLocaleString()}`))
   next()
 }
 
 app.use(log)
+
+app.use('/api', api)
+app.use('/blog', blog)
 
 app.get('/', (req, res) =>{
   console.log(req)
