@@ -9,7 +9,7 @@ import session from 'express-session';
 
 import argon2 from 'argon2';
 
-import { authentication, blogs, initBlogJson } from "./utils/utils.js";
+import { authentication, initBlogJson } from "./utils/utils.js";
 import api from "./api/api.js";
 import blog from "./blog/blog.js";
 
@@ -33,6 +33,14 @@ app.use(express.static('../generated/'))
 app.use('/api', api)
 app.use('/blog', blog)
 
+const log = (req, res, next) => {
+  let d = new Date();
+  console.log(`req ${req.method} ${req.originalUrl} by ${req.ip} @ ${d.toLocaleString()}`)
+  next()
+}
+
+app.use(log)
+
 app.get('/', (req, res) =>{
   console.log(req)
   return res.sendFile('index.html', { root: '../app/dist/' });
@@ -49,8 +57,13 @@ app.get('/pulse', (req, res
 })
 
 app.get('/verify', async (req, res) => {
-  let password = req.query.password;
-  if (!password) return res.status(400).redirect('/');
+  if (!req.session.authed) return res.sendFile('index.html', { root: '../app/dist/pages/login/' });
+  return res.redirect('/admin');
+})
+
+app.post('/verify', async (req, res) => {
+  let password = req.body.password;
+  if (!password) return res.sendFile('index.html', { root: '../app/dist/pages/login/' });
   
   let verified = await argon2.verify(process.env.HASH, password);
   

@@ -3,13 +3,7 @@ import { authentication, blogs, saveBlogs, generateImage } from '../utils/utils.
 
 const api = express.Router()
 
-// middleware that is specific to this router
-const timeLog = (req, res, next) => {
-  console.log('Time: ', Date.now())
-  next()
-}
-
-api.use(authentication, timeLog)
+api.use(authentication)
 
 api.get('/blogs', (req, res) => {
   res.json(blogs)

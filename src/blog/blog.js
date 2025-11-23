@@ -10,13 +10,6 @@ const __dirname = path.dirname(__filename);
 
 const blog = express.Router()
 
-const timeLog = (req, res, next) => {
-  console.log('Time: ', Date.now())
-  next()
-}
-
-blog.use(timeLog)
-
 // to do - store cache of html, dynamically update when new blog post?
 blog.get('/', async (req, res) => {
     try {
