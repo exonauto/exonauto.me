@@ -17,6 +17,7 @@ export default defineConfig({
         'blogTemplate': '/pages/blog/template.html',
         'blogImageTemplate': '/pages/blog/templateImage.html',
         'echo': '/pages/echo/index.html',
+        'login': '/pages/login/index.html',
         'panel': '/pages/panel/index.html'
       },
       outDir: '/dist',
