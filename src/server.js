@@ -4,12 +4,15 @@ import path from 'path';
 import {fileURLToPath} from 'url';
 import { promises as fs } from 'fs';
 
+import chalk from 'chalk';
+import serveIndex from 'serve-index';
+
 import express from 'express';
 import session from 'express-session';
 
 import argon2 from 'argon2';
 
-import { authentication, initBlogJson } from "./utils/utils.js";
+import { authentication, initBlogJson, stringToColor } from "./utils/utils.js";
 import api from "./api/api.js";
 import blog from "./blog/blog.js";
 
@@ -28,6 +31,9 @@ app.use(session({
 }));
 
 app.use(express.static('../app/dist/'))
+app.use(express.static('../app/dist/'));
+app.use('/index', serveIndex('../app/dist/', {'icons': true}));
+
 app.use(express.static('../generated/'))
 
 app.use('/api', api)
@@ -35,7 +41,8 @@ app.use('/blog', blog)
 
 const log = (req, res, next) => {
   let d = new Date();
-  console.log(`req ${req.method} ${req.originalUrl} by ${req.ip} @ ${d.toLocaleString()}`)
+  const hex = chalk.hex(stringToColor(req.originalUrl));
+  console.log(hex(`req ${req.method} ${req.originalUrl} by ${req.ip} @ ${d.toLocaleString()}`))
   next()
 }
 
