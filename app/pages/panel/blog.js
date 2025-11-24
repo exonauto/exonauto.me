@@ -1,4 +1,6 @@
 import { editor, KeyCode } from 'monaco-editor/esm/vs/editor/editor.api';
+import 'monaco-editor/esm/vs/language/html/monaco.contribution';
+import "monaco-editor/esm/vs/basic-languages/html/html.contribution.js";
 
 let editorInstance = editor.create(document.getElementById('editor'), {
     value: "<!-- \n Default Title \n Default ID \n Default Headline \n -->\n<h3>A title!</h3>\n<hr>\n<p>Some content!</p>",
