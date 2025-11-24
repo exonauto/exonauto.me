@@ -1,22 +1,22 @@
-import * as monaco from 'monaco-editor';
+import { editor, KeyCode } from 'monaco-editor/esm/vs/editor/editor.api';
 
-let editor = monaco.editor.create(document.getElementById('editor'), {
+let editorInstance = editor.create(document.getElementById('editor'), {
     value: "<!-- \n Default Title \n Default ID \n Default Headline \n -->\n<h3>A title!</h3>\n<hr>\n<p>Some content!</p>",
     language: "html",
     theme: 'vs-dark'
 });
 
-var myBinding = editor.addCommand(monaco.KeyCode.F8, function () {
+var myBinding = editorInstance.addCommand(KeyCode.F8, function () {
     // todo, visual feedback for when you actually preview the blogs
-    const value = editor.getValue();
+    const value = editorInstance.getValue();
     on(value);
 });
 
-var myBinding = editor.addCommand(monaco.KeyCode.F9, function () {
+var myBinding = editorInstance.addCommand(KeyCode.F9, function () {
     // todo, visual feedback for when you actually send the blogs
     // add tags to blogs?
 
-    const value = editor.getValue();
+    const value = editorInstance.getValue();
     const split = value.split('\n');
     
     split.shift()
@@ -35,14 +35,14 @@ var myBinding = editor.addCommand(monaco.KeyCode.F9, function () {
 
 // Resize the editor when the window size changes
 const editorElement = document.getElementById("editor");
-window.addEventListener("resize", () => editor.layout({
+window.addEventListener("resize", () => editorInstance.layout({
       width: editorElement.offsetWidth,
       height: editorElement.offsetHeight
 }));
   
 window.editBlog = async function (json, blogKey) {
     const {key, headline, title, content} = json;
-    editor.getModel().setValue(`<!-- \n ${title} \n ${blogKey} \n ${headline} \n -->\n ${content}`);
+    editorInstance.getModel().setValue(`<!-- \n ${title} \n ${blogKey} \n ${headline} \n -->\n ${content}`);
 }
 
 async function postBlog(title, key, headline, content) {
