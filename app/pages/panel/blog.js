@@ -8,16 +8,7 @@ let editorInstance = editor.create(document.getElementById('editor'), {
     theme: 'vs-dark'
 });
 
-var myBinding = editorInstance.addCommand(KeyCode.F8, function () {
-    // todo, visual feedback for when you actually preview the blogs
-    const value = editorInstance.getValue();
-    on(value);
-});
-
-var myBinding = editorInstance.addCommand(KeyCode.F9, function () {
-    // todo, visual feedback for when you actually send the blogs
-    // add tags to blogs?
-
+function getValues(){
     const value = editorInstance.getValue();
     const split = value.split('\n');
     
@@ -31,7 +22,18 @@ var myBinding = editorInstance.addCommand(KeyCode.F9, function () {
 
     const content = split.join('\n');
 
-    console.log( title, id, headline, content );
+    return {title, id, headline, content};
+}
+
+var myBinding = editorInstance.addCommand(KeyCode.F8, function () {
+    let {title, id, headline, content} = getValues();
+    on(title, id, headline, content);
+});
+
+var myBinding = editorInstance.addCommand(KeyCode.F9, function () {
+    // todo, visual feedback for when you actually send the blogs
+    // add tags to blogs?
+    let {title, id, headline, content} = getValues();
     postBlog(title, id, headline, content);
 });
 
