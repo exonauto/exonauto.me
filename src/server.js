@@ -12,6 +12,8 @@ import session from 'express-session';
 
 import argon2 from 'argon2';
 
+import helmet from 'helmet'
+
 import { authentication, initBlogJson, stringToColor } from "./utils/utils.js";
 import api from "./api/api.js";
 import blog from "./blog/blog.js";
@@ -21,12 +23,15 @@ const __dirname = path.dirname(__filename);
 
 const app = express();
 
-app.set('trust proxy', true);
+app.disable('x-powered-by')
+app.set('trust proxy', 1)
+app.use(helmet())
 
 app.use(express.urlencoded({ extended: false }));
 app.use(express.json());
 
 app.use(session({
+  name: 'sssid',
   secret: process.env.SESSION_SECRET,
   resave: false,
   saveUninitialized: false
@@ -87,6 +92,15 @@ app.post('/verify', async (req, res) => {
   }
 
   return res.status(verified ? 200: 401).redirect('/admin');
+})
+
+app.use((req, res, next) => {
+  res.status(404).send("???")
+})
+
+app.use((err, req, res, next) => {
+  console.error(err.stack)
+  res.status(500).send('Uhm that wasn\'t supposed to happen... (internal server error)')
 })
 
 initBlogJson();
