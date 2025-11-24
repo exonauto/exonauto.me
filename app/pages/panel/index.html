@@ -42,82 +42,8 @@
       </main>
     </section>
 
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.49.0/min/vs/loader.min.js"></script>
+    <!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.49.0/min/vs/loader.min.js"></script> -->
     <script src="/js/admin.js"></script>
-    <script>
-    // Proxy Monaco Editor workers using a data URL (adapted from: https://github.com/microsoft/monaco-editor/blob/main/docs/integrate-amd-cross.md)
-    require.config({ paths: { "vs": "https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.49.0/min/vs/" }});
-    
-    window.MonacoEnvironment = {
-        getWorkerUrl: function(workerId, label) {
-            return `data:text/javascript;charset=utf-8,${encodeURIComponent(`
-                self.MonacoEnvironment = { baseUrl: "https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.49.0/min/" };
-                importScripts("https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.49.0/min/vs/base/worker/workerMain.min.js");`
-            )}`;
-        }
-    };
-    
-    require(["vs/editor/editor.main"], function () {
-        var editor = monaco.editor.create(document.getElementById("editor"), {
-            value: "<!-- \n Default Title \n Default ID \n Default Headline \n -->\n<h3>A title!</h3>\n<hr>\n<p>Some content!</p>",
-            language: "html",
-            theme: 'vs-dark'
-        });
-
-        var myBinding = editor.addCommand(monaco.KeyCode.F8, function () {
-          // todo, visual feedback for when you actually preview the blogs
-          const value = editor.getValue();
-          on(value);
-        });
-
-        var myBinding = editor.addCommand(monaco.KeyCode.F9, function () {
-          // todo, visual feedback for when you actually send the blogs
-          // add tags to blogs?
-
-          const value = editor.getValue();
-          const split = value.split('\n');
-          
-          split.shift()
-
-          const title = split.shift().trim();
-          const id = split.shift().trim();
-          const headline = split.shift().trim();
-          
-          split.shift()
-
-          const content = split.join('\n');
-
-          console.log( title, id, headline, content );
-          postBlog(title, id, headline, content);
-        });
-
-        // Resize the editor when the window size changes
-        const editorElement = document.getElementById("editor");
-        window.addEventListener("resize", () => editor.layout({
-            width: editorElement.offsetWidth,
-            height: editorElement.offsetHeight
-        }));
-        
-        window.editBlog = async function (json, blogKey) {
-          const {key, headline, title, content} = json;
-          editor.getModel().setValue(`<!-- \n ${title} \n ${blogKey} \n ${headline} \n -->\n ${content}`);
-        }
-    });
-
-    async function postBlog(title, key, headline, content) {
-      const rawResponse = await fetch('/api/blog/post', {
-          method: 'POST',
-          headers: {
-            'Accept': 'application/json',
-            'Content-Type': 'application/json'
-          },
-          body: JSON.stringify( { title, key, headline, content } )
-      });
-
-      const res = await rawResponse.json();
-      console.log(res);
-    }
-    </script>
-    <script src="/js/blog.js"></script>
+    <script type="module" src="./blog.js"></script>
   </body>
 </html>
