@@ -1,70 +1,36 @@
-const startHtml = `
-<!DOCTYPE html>
-<html>
-  <head>
-    <meta charset="UTF-8">
-    <!-- https://developer.mozilla.org/en-US/docs/Web/HTTP/CSP -->
-    <!-- <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'"> -->
-    <title>{{title}}</title>
-    <!-- HTML Meta Tags -->
-    <!--     <meta name="viewport" content="width=device-width, initial-scale=1.0"> -->
-    <meta name="description" content="{{headline}}">
+let base = null;
 
-    <!-- Google / Search Engine Tags -->
-    <meta itemprop="name" content="{{title}}">
-    <meta itemprop="description" content="{{headline}}">
-    <meta itemprop="image" content="https://exonauto.me/blogs{{image}}.png">
+fetch('/pages/blog/template.html')
+  .then(response => {
+    // When the page is loaded convert it to text
+    return response.text()
+  })
+  .then(html => {
+    const parser = new DOMParser()
+    const doc = parser.parseFromString(html, "text/html")
+    base = doc;
+    console.log(doc)
+  })
+  .catch(error => {
+     console.error('Failed to fetch page: ', error)
+})
 
-    <!-- Facebook Meta Tags -->
-    <meta property="og:url" content="https://www.exonauto.me/blog/{{image}}">
-    <meta property="og:type" content="website">
-    <meta property="og:title" content="{{title}}">
-    <meta property="og:description" content="{{headline}}">
-    <meta property="og:image" content="https://exonauto.me/blogs{{image}}.png">
-
-    <!-- Twitter Meta Tags -->
-    <meta name="twitter:card" content="summary_large_image">
-    <meta name="twitter:title" content="{{title}}">
-    <meta name="twitter:description" content="{{headline}}">
-    <meta name="twitter:image" content="https://exonauto.me/blogs{{image}}.png">
-
-    <link href="/css/echo.css" rel="stylesheet">
-    <link href="/css/retro.css" rel="stylesheet">
-  </head>
-  
-  <body>
-    <div>
-      <nav class="true">
-        <h2>ExonAuto.me</h2>
-        <a style="text-decoration: underline;" href="/">Home</a>
-        <a style="text-decoration: underline;" href="/blog">Blog</a>
-        <a style="text-decoration: underline;" href="https://sketchyfile.download?refer=exonauto.me">Soon</a>
-      </nav>
-      <hr>
-      <br>
-    </div>
-
-    <div class="true" id="blogMain">
-      <h2>{{title}}</h2>
-      <hr>
-      <div id="content" class="content">
-`
-
-const endHtml = `
-            </div>
-        </div>
-    </body>
-</html>
-`
-function on(html) {
+function on(title, id, headline, content) {
     const wrap = document.getElementById('overlayWrap');
     const frame = document.getElementById('overlay');
+    let preview = base.documentElement.outerHTML;
+    preview = preview
+    .replaceAll('{{title}}', title)
+    .replaceAll('{{headline}}', headline)
+    .replaceAll('{{content}}', content);
+
     wrap.style.display = 'flex';
-    frame.srcdoc = startHtml + html + endHtml;
+    frame.srcdoc = preview;
 }
   
 function off() {
     document.getElementById('overlayWrap').style.display = 'none';
     document.getElementById('overlay').srcdoc = "";
 }
+
 off();
