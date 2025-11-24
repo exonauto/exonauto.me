@@ -35,6 +35,7 @@ var myBinding = editorInstance.addCommand(KeyCode.F9, function () {
 
 // Resize the editor when the window size changes
 const editorElement = document.getElementById("editor");
+
 window.addEventListener("resize", () => editorInstance.layout({
       width: editorElement.offsetWidth,
       height: editorElement.offsetHeight
@@ -59,13 +60,16 @@ async function postBlog(title, key, headline, content) {
     console.log(res);
 }
 
-
 async function fetchBlogs(){
     const response = await fetch('/api/blogs');
     if (!response.ok) throw new Error('Network response was not ok');
     
     const blogs = await response.json();
     return blogs;
+}
+
+document.getElementById('overlayWrap').onclick = () => {
+    off();
 }
 
 async function listBlogs(){
