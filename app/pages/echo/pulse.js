@@ -10,7 +10,6 @@ function init(){
     fill();
 }
 
-// dot width / height (padding, ig?);
 let bw = 50;
 let bh = 50;
 
