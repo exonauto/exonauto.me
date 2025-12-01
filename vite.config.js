@@ -2,25 +2,42 @@
 import { defineConfig } from 'vite';
 import { ViteMinifyPlugin } from "vite-plugin-minify";
 
-export default defineConfig({
-  root: "./app/",
-  plugins: [
-      ViteMinifyPlugin(),
-  ],
+import fs from 'fs/promises';
+import path from "path";
+import { fileURLToPath } from "url";
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
+async function listDirectories(dirPath) {
+  let entries = await fs.readdir(dirPath, { withFileTypes: true });
+  return entries.filter(entry => entry.isDirectory());
+}
+
+export default defineConfig(async () => {
+  let folders = {};
+  let dirs = await listDirectories(path.resolve('./app/pages'));
+
+  for (let dir of dirs) {
+    folders[dir.name] = `/pages/${dir.name}/index.html`;
+  }
   
-  build: {
-    rollupOptions: {
+  console.log("folders: ", folders);
+
+  return {
+    root: "./app/",
+    plugins: [ViteMinifyPlugin()],
+    build: {
+      outDir: "dist",
       manifest: true,
-      input: {
-        'main': '/index.html',
-        'blog': '/pages/blog/index.html',
-        'blogTemplate': '/pages/blog/template.html',
-        'blogImageTemplate': '/pages/blog/templateImage.html',
-        'echo': '/pages/echo/index.html',
-        'login': '/pages/login/index.html',
-        'panel': '/pages/panel/index.html'
-      },
-      outDir: '/dist',
-    },
-  },
+      rollupOptions: {
+        input: {
+          main: '/index.html',
+          blogTemplate: '/pages/blog/template.html',
+          blogImageTemplate: '/pages/blog/templateImage.html',
+          ...folders
+        }
+      }
+    }
+  };
 });
