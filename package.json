@@ -17,6 +17,7 @@
     "vite": "^7.2.4"
   },
   "devDependencies": {
+    "lil-gui": "^0.21.0",
     "rollup-plugin-visualizer": "^5.14.0",
     "vite-plugin-minify": "^2.1.0"
   },

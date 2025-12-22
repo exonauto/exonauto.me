@@ -1,0 +1,48 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="/vite.svg" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <!-- <meta name="viewport" content="width=device-width, height=device-height,  initial-scale=1.0, user-scalable=no;user-scalable=0;"/> -->
+    <title>Sketch</title>
+
+    <meta name="description" content="ExonAuto's sketch thingy!!!">
+
+    <!-- Google / Search Engine Tags -->
+    <meta itemprop="name" content="ExonAuto.me">
+    <meta itemprop="description" content="Create & draw with exonauto's sketch tool!">
+    <meta itemprop="image" content="https://exonauto.me/images/exonauto_web.png">
+
+    <!-- Facebook Meta Tags -->
+    <meta property="og:url" content="https://www.exonauto.me/sketch">
+    <meta property="og:type" content="website">
+    <meta property="og:title" content="ExonAuto.me">
+    <meta property="og:description" content="Create & draw with exonauto's sketch tool!">
+    <meta property="og:image" content="https://exonauto.me/images/exonauto_web.png">
+
+    <!-- Twitter Meta Tags -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="ExonAuto.me">
+    <meta name="twitter:description" content="Create & draw with exonauto's sketch tool!">
+    <meta name="twitter:image" content="https://exonauto.me/images/exonauto_web.png">
+
+  </head>
+  <body>
+    <input type="file" id="fileInput" accept=".sketch" />
+
+    <canvas id="c"></canvas>
+    <div id="app">
+      <div id="colors"></div>
+      <div id="center-content"> 
+        <div>
+          <canvas id="awesome"></canvas>
+        </div>
+      </div>
+      <div id="controls">
+        <h1>Menu</h1>
+      </div>
+    </div>
+    <script type="module" src="setupdrawer.ts"></script>
+  </body>
+</html>

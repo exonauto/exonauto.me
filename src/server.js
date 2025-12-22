@@ -25,7 +25,15 @@ const app = express();
 
 app.disable('x-powered-by')
 app.set('trust proxy', 1)
+
 app.use(helmet())
+app.use((req, res, next) => {
+  res.setHeader(
+    "Content-Security-Policy",
+    "style-src 'self' 'unsafe-inline';" // i can't be fucked to bother w/ vite + lil gui bullshit LOL
+  );
+  next();
+});
 
 app.use(express.urlencoded({ extended: false }));
 app.use(express.json());
@@ -64,6 +72,11 @@ app.use('/blog', blog)
 app.get('/', (req, res) =>{
   console.log(req)
   return res.sendFile('index.html', { root: '../app/dist/' });
+})
+
+app.get('/sketch', (req, res) =>{
+  console.log(req)
+  return res.sendFile('index.html', { root: '../app/dist/pages/sketch/' });
 })
 
 app.get('/admin', authentication, (req, res
