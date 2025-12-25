@@ -94,6 +94,7 @@ export class Saves {
         let save = {
             version: this.saveVer,
             dateSaved: new Date().toISOString(),
+            
             this: {
                 clickPos: this.drawingPage.clickPos,
                 clickDrag: this.drawingPage.clickDrag,
@@ -105,10 +106,12 @@ export class Saves {
                 currentColor: this.drawingPage.currentColor,
                 
                 width: this.drawingPage.canvas.width,
-                height: this.drawingPage.canvas.height
+                height: this.drawingPage.canvas.height,
+                
+                saveVer: this.saveVer
             }
         }
-        
+
         return save;
     }
 
