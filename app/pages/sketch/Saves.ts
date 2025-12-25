@@ -6,21 +6,28 @@ type SaveBase = {
     clickStrokeSizes: number[];
 };
 
-type Save =
-    | (SaveBase & {
-        saveVer: 0.1;
-        clickX: number[];
-        clickY: number[];
-    })
-    | (SaveBase & {
-        saveVer: 0.2;
-        clickPos: [number, number][];
+type SaveV1 = SaveBase & {
+    saveVer: 0.1;
+    clickX: number[];
+    clickY: number[];
+};
 
-});
+type SaveV2 = SaveBase & {
+    saveVer: 0.2;
+    clickPos: [number, number][];
+};
+
+type SaveV3 = SaveBase & {
+    saveVer: 0.3;
+    clickPos: [number, number][];
+    background: { string: string; alpha: number };
+};
+
+type Save = SaveV1 | SaveV2 | SaveV3;
 
 export class Saves {
     private drawingPage: DrawingPage;
-    private saveVer = 0.2
+    private saveVer = 0.3
 
     constructor(dp:DrawingPage){
         this.drawingPage = dp;
@@ -62,25 +69,33 @@ export class Saves {
     }
 
     public parseSaveFile(data:any){
-        const supportedSaveVers = [0.1, 0.2];
+        const supportedSaveVers = [0.1, 0.2, 0.3];
         if (!supportedSaveVers.includes(data.version)) alert('Save file version isnt supported, unable to load file. if you think this is a mistake open a issue on https://github.com/exonauto/exonauto.me/issues');
 
         let save:Save = data.this;
 
+        const savesSupportingCondensedClickArray = supportedSaveVers.slice(1);
+        const savesSupportingBackgroundColors = supportedSaveVers.slice(2);
+
         if (save.saveVer == 0.1) {
             let newSaveArr: [number, number][] = []
-            
-            console.log(save.clickX, save);
+                        
             for (let i = 0; i < save.clickX.length; i++){
-                console.log( save.clickX, save.clickX[i] )
                 newSaveArr.push([save.clickX[i], save.clickY[i]])
             }
             
-            console.log(newSaveArr);
             this.drawingPage.clickPos = newSaveArr;
-        } 
-        else if (save.saveVer == 0.2) {
+        }
+        else if (savesSupportingCondensedClickArray.includes(save.saveVer)) {
             this.drawingPage.clickPos = save.clickPos
+        }
+
+        if (savesSupportingBackgroundColors.includes(save.saveVer)) {
+            // i should probably make a more strongly typed save system but this works for now
+            // @ts-ignore
+            this.drawingPage.background = save.background
+        } else {
+            this.drawingPage.background = {string:"#000000", alpha:1};
         }
 
         this.drawingPage.clickDrag = save.clickDrag;
@@ -107,6 +122,8 @@ export class Saves {
                 
                 width: this.drawingPage.canvas.width,
                 height: this.drawingPage.canvas.height,
+
+                background: this.drawingPage.background,
                 
                 saveVer: this.saveVer
             }

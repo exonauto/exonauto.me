@@ -12,22 +12,25 @@ export class DrawingPage {
     public clickDrag: boolean[] = [];
 
     public clickColors: string[] = [];
-    public currentColor: string = 'white';
+    public currentColor: string = '#ffff';
 
     public clickStrokeSizes: number[] = [];
     public currentStrokeSize: number = 4;
     
+    public background = { 	
+        string: '#000000',
+        alpha: 1
+    };
+
     public baseImage = new Image();
 
     private saves: Saves;
 
     constructor(/*imageSrc: string*/) {
-        let canvas = document.getElementById('awesome') as
-                 HTMLCanvasElement;
-
-        canvas.width = 1024*4; 
+        let canvas = document.getElementById('awesome') as HTMLCanvasElement;
+        canvas.width = 1024*4;
         canvas.height = 1024*4;
-        // this.baseImage.src = imageSrc;
+        
         let context = canvas.getContext("2d");
 
         if (!context) {
@@ -66,7 +69,7 @@ export class DrawingPage {
     }
 
     private addColorButtons() {
-        let colorsDiv = document.getElementById('colors');
+        let colorsDiv = document.getElementById('side-left');
         let colors = ["white", "black", "red", "green", "yellow", "blue", "brown", "orange", "pink", "purple", "gray"]
 
         for (let color of colors){
@@ -81,34 +84,47 @@ export class DrawingPage {
     }
 
     private addFunctionButtons() {
-        let controlDiv = document.getElementById('controls') as Node;
-        const gui = new GUI( {container: controlDiv} );
+        let controlRight = document.getElementById('controls') as Node;
+        let controlLeft = document.getElementById('side-left') as Node;
+        const guiRight = new GUI( {container: controlRight} );
+        const guiLeft = new GUI( {container: controlLeft} );
+        
         const controls = {
             saveJson: () => this.saves.saveEditableFile(),
             savePng: () => this.saves.savePng(),
-            clear: () => this.clearEventHandler(),
+            clear: () => this.clearCanvas(),
             loadFile : () => { document.getElementById('fileInput')!.click() },
             strokeSize: this.currentStrokeSize ?? 4
         };
 
-        const saveFolder = gui.addFolder('saves');
+        const saveFolder = guiRight.addFolder('saves');
         saveFolder.add(controls, 'saveJson').name('Save current as .json');
         saveFolder.add(controls, 'savePng').name('Save current as .png');
-        saveFolder.add(controls, 'loadFile').name('load save file');
-
-        gui.add(controls, 'clear').name('Clear');
-
-        gui.add(controls, 'strokeSize', 1, 40, 1)
+        saveFolder.add(controls, 'loadFile').name('Load save file');
+        
+        const controlFolder = guiLeft.addFolder('Controls')
+        
+        controlFolder.add(controls, 'clear').name('Clear canvas').onChange(this.redraw);
+        controlFolder.add(controls, 'strokeSize', 1, 40, 1)
         .name('Stroke size')
         .onChange((value: number) => {
             this.currentStrokeSize = value;
         });
+                
+        guiLeft.addColor(this, 'currentColor').name('Stroke color');
+        guiLeft.addColor(this.background, 'string').name('Background color');
+        
+        guiLeft.onChange(() => {
+            this.redraw();
+        });
+        // controlFolder.add(this.canvas, 'width').onChange(this.redraw);
+        // controlFolder.add(this.canvas, 'height').onChange(this.redraw);
     }
     
     public redraw() {
-        this.context.strokeStyle = 'white';
+        this.context.strokeStyle = this.background.string;
+        this.context.fillStyle = this.background.string;
         this.context.fillRect(0, 0, this.canvas.width, this.canvas.height);
-        this.drawBase()
         
         let context = this.context;
         let clickDrag = this.clickDrag;
@@ -146,7 +162,7 @@ export class DrawingPage {
         this.clickPos = [];
         this.clickDrag = [];
         this.clickColors = [];
-        this.clickStrokeSizes = []; 
+        this.clickStrokeSizes = [];
     }
 
     private clearEventHandler = () => {
@@ -205,7 +221,7 @@ export class DrawingPage {
         } else {
             return;
         }
-    
+
         const x = (clientX - rect.left) * scaleX;
         const y = (clientY - rect.top) * scaleY;
     
