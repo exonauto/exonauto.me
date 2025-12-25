@@ -1,25 +1,25 @@
 import GUI from 'lil-gui';
 
 import './main.css';
+import { Saves } from './Saves';
 
-class DrawingPage {
-    private canvas: HTMLCanvasElement;
-    private context: CanvasRenderingContext2D;
-    private paint: boolean;
+export class DrawingPage {
+    public canvas: HTMLCanvasElement;
+    public context: CanvasRenderingContext2D;
+    public paint: boolean;
 
-    private clickX: number[] = [];
-    private clickY: number[] = [];
-    private clickDrag: boolean[] = [];
+    public clickPos: [number, number][] = [];
+    public clickDrag: boolean[] = [];
 
-    private clickColors: string[] = [];
-    private currentColor: string = 'white';
+    public clickColors: string[] = [];
+    public currentColor: string = 'white';
 
-    private clickStrokeSizes: number[] = [];
-    private currentStrokeSize: number = 4;
+    public clickStrokeSizes: number[] = [];
+    public currentStrokeSize: number = 4;
     
-    private baseImage = new Image();
+    public baseImage = new Image();
 
-    private saveVer = 0.1
+    private saves: Saves;
 
     constructor(/*imageSrc: string*/) {
         let canvas = document.getElementById('awesome') as
@@ -46,8 +46,8 @@ class DrawingPage {
         this.redraw();
         this.createUserEvents();
         this.addColorButtons();
-        this.addFunctionButtons();
-        this.createSaveLoaderEvent();
+        this.addFunctionButtons();        
+        this.saves = new Saves(this);
         window.addEventListener('keydown', this.keypressHandler);
     }
 
@@ -63,35 +63,6 @@ class DrawingPage {
         canvas.addEventListener("touchmove", this.dragEventHandler);
         canvas.addEventListener("touchend", this.releaseEventHandler);
         canvas.addEventListener("touchcancel", this.cancelEventHandler);
-    }
-
-    private createSaveLoaderEvent() {
-        const fileInput = document.getElementById('fileInput') as HTMLInputElement;
-        if (!fileInput) return;
-    
-        fileInput.addEventListener('change', (event: Event) => {
-            const target = event.target as HTMLInputElement;
-            const file = target.files?.[0];
-            if (!file) return;
-    
-            console.log('File selected:', file.name);
-    
-            const reader = new FileReader();
-            reader.onload = (e: ProgressEvent<FileReader>) => {
-                const text = e.target?.result;
-                if (typeof text === 'string') {
-                    try {
-                        let data = JSON.parse(text);
-                        this.parseSaveFile(data)
-                        console.log('File content loaded:', data);
-                    } catch (err) {
-                        console.error('Error parsing save:', err);
-                    }
-                }
-            };
-    
-            reader.readAsText(file); // Use readAsText for JSON or custom text files
-        });
     }
 
     private addColorButtons() {
@@ -113,8 +84,8 @@ class DrawingPage {
         let controlDiv = document.getElementById('controls') as Node;
         const gui = new GUI( {container: controlDiv} );
         const controls = {
-            saveJson: () => this.saveJson(),
-            savePng: () => this.savePng(),
+            saveJson: () => this.saves.saveEditableFile(),
+            savePng: () => this.saves.savePng(),
             clear: () => this.clearEventHandler(),
             loadFile : () => { document.getElementById('fileInput')!.click() },
             strokeSize: this.currentStrokeSize ?? 4
@@ -133,85 +104,27 @@ class DrawingPage {
             this.currentStrokeSize = value;
         });
     }
-
-    private convertToSaveFile(){
-        let save = {
-            version: this.saveVer,
-            dateSaved: new Date().toISOString(),
-            this: this
-        }
-
-        return save;
-    }    
-
-    private parseSaveFile(data:any){
-        if (data.version !== this.saveVer) alert('Save file version isnt same as current, may cause issues')
-
-        let save:this = data.this;
-
-        this.clickX = save.clickX;
-        this.clickY = save.clickY;
-        this.clickDrag = save.clickDrag;
-        this.clickColors = save.clickColors;
-        this.clickStrokeSizes = save.clickStrokeSizes;
-        
-        this.redraw();
-    }
-
-    private saveJson(){
-        let save = this.convertToSaveFile();
-        const blob = new Blob([JSON.stringify(save, null, 2)], {
-            type: "application/json",
-        });
-
-        var blobUrl = URL.createObjectURL(blob);
-        
-        var link = document.createElement("a");
-        link.href = blobUrl;
-        let date = new Date();
-        link.download = `${date.toISOString()}.sketch`;
-        link.innerText = "Save file @"+date.toLocaleDateString();
-                
-        let controlDiv = document.getElementById('controls');
-        if (!controlDiv) return alert('Unable to generate a save file link. \n While the json file creation failed, your file is not lost. \n Put this into a .json file, and it should load fine. \n '+JSON.stringify(save))
-        controlDiv.appendChild(link);
-        controlDiv.appendChild(document.createElement('br'))
-    }
-
-    private savePng(){
-        const canvas = this.canvas;
-        let image = canvas.toDataURL();
-        
-        let link = document.createElement('a');
-        let date = new Date();
-        link.innerText = "Save png @"+date.toLocaleDateString();
-        link.download = `sketch_${date.toLocaleDateString()}.png`;
-        link.href = image;
-
-        document.getElementById('controls')!.appendChild(link);
-        document.getElementById('controls')!.appendChild(document.createElement('br'))
-    }
     
-    private redraw() {
+    public redraw() {
         this.context.strokeStyle = 'white';
         this.context.fillRect(0, 0, this.canvas.width, this.canvas.height);
         this.drawBase()
-
-        let clickX = this.clickX;
+        
         let context = this.context;
         let clickDrag = this.clickDrag;
-        let clickY = this.clickY;
-        for (let i = 0; i < clickX.length; ++i) {
+        
+        for (let i = 0; i < this.clickPos.length; ++i) {
             context.beginPath();
             context.strokeStyle = this.clickColors[i];
             context.lineWidth = this.clickStrokeSizes[i];
+
             if (clickDrag[i] && i) {
-                context.moveTo(clickX[i - 1], clickY[i - 1]);
+                context.moveTo(this.clickPos[i - 1][0], this.clickPos[i - 1][1]);
             } else {
-                context.moveTo(clickX[i] - 1, clickY[i]);
+                context.moveTo(this.clickPos[i][0] - 1, this.clickPos[i][1]);
             }
     
-            context.lineTo(clickX[i], clickY[i]);
+            context.lineTo(this.clickPos[i][0], this.clickPos[i][1]);
             context.stroke();
         }
         context.closePath();
@@ -222,8 +135,7 @@ class DrawingPage {
     }
 
     private addClick(x: number, y: number, dragging: boolean) {
-        this.clickX.push(x);
-        this.clickY.push(y);
+        this.clickPos.push([x,y])
         this.clickColors.push(this.currentColor);
         this.clickStrokeSizes.push(this.currentStrokeSize)
         this.clickDrag.push(dragging);
@@ -231,8 +143,7 @@ class DrawingPage {
         
     private clearCanvas() {
         this.context.clearRect(0, 0, this.canvas.width, this.canvas.height);
-        this.clickX = [];
-        this.clickY = [];
+        this.clickPos = [];
         this.clickDrag = [];
         this.clickColors = [];
         this.clickStrokeSizes = []; 
@@ -313,9 +224,7 @@ class DrawingPage {
 
             for (let i = this.clickDrag.length - 1; i > -1; i--) {
                 if (this.clickDrag[i] ) continue;
-                
-                this.clickY.splice(i);
-                this.clickX.splice(i);
+                this.clickPos.splice(i);
                 this.clickColors.splice(i);
                 this.clickDrag.splice(i);
                 this.clickStrokeSizes.splice(i);
