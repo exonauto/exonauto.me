@@ -70,12 +70,10 @@ app.use('/api', api)
 app.use('/blog', blog)
 
 app.get('/', (req, res) =>{
-  console.log(req)
   return res.sendFile('index.html', { root: '../app/dist/' });
 })
 
 app.get('/sketch', (req, res) =>{
-  console.log(req)
   return res.sendFile('index.html', { root: '../app/dist/pages/sketch/' });
 })
 
