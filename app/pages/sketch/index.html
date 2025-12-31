@@ -29,13 +29,19 @@
 
   </head>
   <body>
-    <input type="file" id="fileInput" accept=".sketch" />
+    <input type="file" id="fileInput" accept=".sketch .json" />
 
     <canvas id="c"></canvas>
     <div id="app">
+      
       <div id="side-left">
         <h1>Menu</h1>
+        <ul class="sortable-list">
+          <li class="sortable-item" data-layer="0" draggable="true">Layer 1</li>
+          <li class="sortable-item" data-layer="1" draggable="true">Layer 2</li>
+        </ul>
       </div>
+
       <div id="center-content"> 
         <div>
           <canvas id="awesome"></canvas>

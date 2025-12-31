@@ -2,7 +2,6 @@ const pageMap = [
   { name: 'home', path: '/' },
   { name: 'blog', path: '/blog' },
   { name: 'sketch', path: '/sketch' },
-  { name: 'soon', path: 'https://sketchyfile.download?refer=exonauto.me' },
   { name: 'admin', path: '/admin', authed: true }
 ];
 
