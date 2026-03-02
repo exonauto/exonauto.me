@@ -1,13 +1,11 @@
 const pageMap = [
   { name: 'home', path: '/' },
   { name: 'blog', path: '/blog' },
-  { name: 'sketch', path: '/sketch' },
+  { name: 'verify', path: '/verify' },
   { name: 'admin', path: '/admin', authed: true }
 ];
 
 async function init() {
-  // const me = await (await fetch('/api/me')).json();
-  // const authed = me.authed;
   const cookie = await cookieStore.get('authed');
   const nav = document.querySelector("nav");
   const currName = window.location.pathname.substring(1) || "home";
