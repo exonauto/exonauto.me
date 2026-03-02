@@ -6,14 +6,14 @@ const pageMap = [
 ];
 
 async function init() {
-  const me = await (await fetch('/api/me')).json();
-  const authed = me.authed;
-
+  // const me = await (await fetch('/api/me')).json();
+  // const authed = me.authed;
+  const cookie = await cookieStore.get('authed');
   const nav = document.querySelector("nav");
   const currName = window.location.pathname.substring(1) || "home";
 
   for (const page of pageMap) {
-    if (page.authed && !authed) continue;
+    if (page.authed && !cookie) continue;
 
     if (currName.startsWith(page.name)) continue;
     

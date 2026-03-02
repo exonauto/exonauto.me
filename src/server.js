@@ -100,6 +100,7 @@ app.post('/verify', async (req, res) => {
   
   if (verified) {
     req.session.authed = true;
+    res.cookie('authed', 'true', { maxAge: 900000, httpOnly: false});
   }
 
   return res.status(verified ? 200: 401).redirect('/admin');

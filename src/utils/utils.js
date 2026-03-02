@@ -15,9 +15,11 @@ const filePath = '../blogs.json';
 
 export const authentication = (req, res, next) => {
     if (!req.session.authed) {
+      res.clearCookie('authed');
       return res.status(401).redirect('/');
     }
     
+    res.cookie('authed', 'true', { maxAge: 900000, httpOnly: false});
     next();
 }
 
