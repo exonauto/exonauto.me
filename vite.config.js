@@ -30,12 +30,24 @@ export default defineConfig(async () => {
     build: {
       outDir: "dist",
       manifest: true,
+      
       rollupOptions: {
         input: {
           main: '/index.html',
           blogTemplate: '/pages/blog/template.html',
           blogImageTemplate: '/pages/blog/templateImage.html',
           ...folders
+        },
+        output: {
+          codeSplitting: {
+            groups: [
+              {
+                // still not ideal since monaco is so huge but I'm planning on switching to another editor so... thats a todo
+                name: 'vendor',
+                test: /node_modules/,
+              }
+            ]
+          }
         }
       }
     }
