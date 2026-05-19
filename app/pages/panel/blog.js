@@ -25,17 +25,23 @@ function getValues(){
     return {title, id, headline, content};
 }
 
-var myBinding = editorInstance.addCommand(KeyCode.F8, function () {
+var functionEight = editorInstance.addCommand(KeyCode.F8, function () {
     let {title, id, headline, content} = getValues();
     on(title, id, headline, content);
 });
 
-var myBinding = editorInstance.addCommand(KeyCode.F9, function () {
+var functionNine = editorInstance.addCommand(KeyCode.F9, function () {
     // todo, visual feedback for when you actually send the blogs
     // add tags to blogs?
     let {title, id, headline, content} = getValues();
     postBlog(title, id, headline, content);
 });
+
+var functionTen = editorInstance.addCommand(KeyCode.F10, function () {
+    let {id} = getValues();
+    deleteBlog(id);
+});
+
 
 // Resize the editor when the window size changes
 const editorElement = document.getElementById("editor");
@@ -63,6 +69,21 @@ async function postBlog(title, key, headline, content) {
     const res = await rawResponse.json();
     console.log(res);
 }
+
+
+async function deleteBlog(key) {
+    const rawResponse = await fetch('/api/blog/'+key, {
+        method: 'DELETE',
+        headers: {
+            'Accept': 'application/json',
+            'Content-Type': 'application/json'
+        }
+    });
+
+    const res = await rawResponse.json();
+    console.log(res);
+}
+
 
 async function fetchBlogs(){
     const response = await fetch('/api/blogs');

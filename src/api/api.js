@@ -15,6 +15,21 @@ api.get('/blogs', (req, res) => {
   res.json(blogs)
 })
 
+api.delete('/blog/:id', (req, res) => {
+  try {
+    delete blogs[req.params.id];
+    
+    res.send({
+      blogs
+    });
+
+    saveBlogs();
+  }catch (error) {
+    console.warn('Err when deleting blog w/ id: '+req.params.id, error);
+    res.status(500).json( { "error":"Err when deleting id check logs!" } )
+  }
+});
+
 api.post('/blog/post', (req, res) => {
   const blogInfo = req.body;
   const {title, key, headline, content} = blogInfo;
@@ -28,7 +43,7 @@ api.post('/blog/post', (req, res) => {
     res.send({
       message: blogInfo,
     });
-
+    
   } catch (error) {
     console.warn(error);
     res.status(500).json( { "error":"whoops! internal server error!" } )
