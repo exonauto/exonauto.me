@@ -50,10 +50,12 @@ app.use(express.static('../generated/'))
 
 app.use('/index', serveIndex('../app/dist/', { icons: true, directory:'/' }));
 
-app.use('/index/*', (req, res) => {
-  if (req.originalUrl == "/index") return res.status(200).res.redirect('/index');
+app.use('/index', (req, res) => {
+  if (req.originalUrl === '/index') {
+    return res.redirect('/');
+  }
 
-  const target = req.originalUrl.replace(/^\/index/, '') || '/index';
+  const target = req.originalUrl.replace(/^\/index/, '') || '/';
   return res.redirect(302, target);
 });
 
@@ -71,10 +73,6 @@ app.use('/blog', blog)
 
 app.get('/', (req, res) =>{
   return res.sendFile('index.html', { root: '../app/dist/' });
-})
-
-app.get('/sketch', (req, res) =>{
-  return res.sendFile('index.html', { root: '../app/dist/pages/sketch/' });
 })
 
 app.get('/admin', authentication, (req, res
