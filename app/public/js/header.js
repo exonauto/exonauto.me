@@ -25,4 +25,19 @@ async function init() {
   }
 }
 
+function initImgHover(){
+  let imgList = document.getElementsByClassName('myProfileImg');
+  let img = imgList[0];
+  if (!img) return;
+
+  img.addEventListener('mouseover', function() {
+    this.src = '/images/favicon.gif';
+  });
+
+  img.addEventListener('mouseleave', function(){
+    this.src = '/images/favicon.png'
+  })
+}
+
 init();
+initImgHover();
