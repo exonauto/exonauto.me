@@ -9,6 +9,7 @@
     "@editorjs/header": "^2.8.9",
     "@editorjs/list": "^2.0.9",
     "@editorjs/quote": "^2.7.6",
+    "@editorjs/raw": "^2.5.1",
     "@editorjs/simple-image": "^1.6.0",
     "@resvg/resvg-js": "^2.6.2",
     "argon2": "^0.44.0",
