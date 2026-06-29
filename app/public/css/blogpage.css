@@ -1,5 +1,3 @@
-
-
 pre,
 code {
   font-family: Menlo, Monaco, "Courier New", monospace;
@@ -245,4 +243,25 @@ blockquote {
   
   /* background-color: #FF0000; */
   border: 1px solid #999;
+}
+
+.ce-code__textarea {
+  background: #333 !important;
+  color: #fafafa !important;
+  font-family: Menlo, Monaco, "Courier New", monospace !important;
+}
+
+.ce-block {
+  padding-left: 2px;
+  padding-right: 2px;
+}
+
+.ce-toolbar__plus,
+.ce-toolbar__settings-btn,
+.ce-paragraph {
+  color: white !important;
+}
+.ce-toolbar__plus:hover,
+.ce-toolbar__settings-btn:hover {
+  color: #333 !important;
 }
