@@ -2,11 +2,12 @@ import EditorJS from '@editorjs/editorjs';
 import Header from '@editorjs/header'; 
 import List from '@editorjs/list'; 
 import SimpleImage from "@editorjs/simple-image";
-import Quote from "@editorjs/simple-image";
+import Quote from "@editorjs/quote";
 import CodeTool from "@editorjs/code";
 import Embed from '@editorjs/embed';
+import RawTool from '@editorjs/raw';
 import edjsHTML from 'editorjs-html'
-  
+
 async function postBlog(title, key, headline, content) {
     const rawResponse = await fetch('/api/blog/post', {
         method: 'POST',
@@ -115,13 +116,14 @@ const editor = new EditorJS({
         },
         list: List,
         simpleImage: SimpleImage,
-        // quote: Quote,
+        quote: Quote,
         code: CodeTool,
-        
-        // embed: {
-        //     class: Embed,
-        //     inlineToolbar: true
-        // }
+        raw: RawTool,
+        embed: {
+            class: Embed,
+            inlineToolbar: true
+        },
+
     }
 });
 
@@ -160,7 +162,7 @@ async function getValues(justHtml){
     if (justHtml) return {title, id, headline};
     
     await editor.isReady;
-    const data = await editor.save();
+    const data = await editor.save(); console.log(data);
     const parser = edjsHTML(plugins);
     const html = parser.parse(data);
     
@@ -179,12 +181,16 @@ document.getElementById('overlayWrap').onclick = () => {
 
 const plugins = {
     // The keyname must match with the type of block you want to parse with this funcion
-    simpleImage: customParser,
+    simpleImage: customSimpleImageParser,
+    raw: customRawParser
 };
 
 // @todo implement withBackground & withBorder as well as stretched...?
-function customParser(block) {
+function customSimpleImageParser(block) {
     return `<div><img src="${block.data.url}" alt="${block.data.caption}"></img></div>`;
+}
+function customRawParser(block) {
+    return `${block.data.html}`;
 }
 
 function createElm(tag, text){
