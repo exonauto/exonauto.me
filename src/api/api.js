@@ -1,5 +1,19 @@
 import express from 'express';
+
 import { authentication, blogs, saveBlogs, generateImage } from '../utils/utils.js';
+
+import fs from 'fs/promises';
+import path from "path";
+import { fileURLToPath } from "url";
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
+async function listImages() {
+  let dirPath = await path.resolve('../app/dist/images');
+  let entries = await fs.readdir(dirPath, { withFileTypes: true });
+  return entries.filter(entry => !entry.isDirectory());
+}
 
 const api = express.Router()
 
@@ -9,7 +23,12 @@ api.get('/me', (req, res) => {
   });
 });
 
+
 api.use(authentication)
+
+api.get('/images',  async (req, res) => {
+  res.json( await listImages());
+});
 
 api.get('/blogs', (req, res) => {
   res.json(blogs)

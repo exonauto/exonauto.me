@@ -8,7 +8,8 @@
     <meta name="description" content="ExonAuto's personal website.">
 
     <link href="/css/general.css" rel="stylesheet">
-    <link href="/css/retro.css" rel="stylesheet">
+    <link href="/css/blogpage.css" rel="stylesheet">
+    <!-- <link href="/css/retro.css" rel="stylesheet"> -->
     <link rel="icon" type="image/x-icon" href="/images/favicon.ico">
   </head>
   
@@ -16,31 +17,51 @@
     <div id="overlayWrap" class="overlayWrap">
     <iframe id="overlay" style="width:90%; height:90%; border:0;" onclick="event.stopPropagation()"></iframe>
   </div>
-
-  <nav>
-    <div class="logo-container">
-        <img class="myProfileImg" src="/images/exonauto.png">
-      </div>
-      <h2>Blog management panel!</h2>
-    </nav>
-    <section>
-      <div>
+  <section id="app">
+    <div id="blogList">
+      <div style="text-align: center; margin-bottom: 100px;">
         <br>
-        <h1>Blogs</h1>
-        <div></div>
-        <p> (F8 to preview, F9 to publish) </p>
-        <div id="editor" style="width: 500px; height: 300px; border: 1px solid #ccc"></div>
-      </div>
-
-      <main>
-        <div style="text-align: center; margin-bottom: 100px;">
-          <h3>Current blogs</h3>
-          <hr>
-          <br>
-          <div id="blogs">
-          </div>
+        <div id="blogs">
         </div>
-      </main>
+      </div>
+    </div>
+    <main>
+      <!-- <p> (F8 to preview, F9 to publish) </p> -->
+      <div class="options">
+        <div>
+          title: <input id="title">
+        </div>
+        <div>
+          headline: <input id="headline">
+        </div>
+        <div>
+          url slug: <input id="key">
+        </div>
+      </div>
+      <br>
+      <div class="options">
+        <div>
+          <button style="background-color: lightgreen;" id="post">post current</button>
+        </div>
+        <div>
+          <button style="background-color: yellowgreen;" id="preview">preview current</button>
+        </div>
+        <div>
+          <button style="background-color: darkred; color:#ccc" id="delete">delete current</button>
+        </div>
+      </div>
+      <br>
+      <div id="editor" style="border: 1px solid #ccc"></div>
+      <br>
+    </main>
+    <div id="imageList">
+      <div style="text-align: center; margin-bottom: 100px;">
+        <br>
+        <div id="images">
+        </div>
+      </div>
+    </div>
+    
     </section>
 
     <script src="/js/admin.js"></script>

@@ -3,14 +3,21 @@
   "version": "1.0.0",
   "type": "module",
   "dependencies": {
+    "@editorjs/code": "^2.9.4",
+    "@editorjs/editorjs": "^2.31.6",
+    "@editorjs/embed": "^2.8.0",
+    "@editorjs/header": "^2.8.9",
+    "@editorjs/list": "^2.0.9",
+    "@editorjs/quote": "^2.7.6",
+    "@editorjs/simple-image": "^1.6.0",
     "@resvg/resvg-js": "^2.6.2",
     "argon2": "^0.44.0",
     "chalk": "^5.6.2",
     "dotenv": "^16.5.0",
+    "editorjs-html": "^4.0.5",
     "express": "^5.2.1",
     "express-session": "^1.18.0",
     "helmet": "^8.1.0",
-    "monaco-editor": "^0.55.1",
     "satori": "^0.18.2",
     "satori-html": "^0.3.2",
     "serve-index": "^1.9.1",
@@ -25,8 +32,7 @@
     "globals": "^17.3.0",
     "jiti": "^2.6.1",
     "lil-gui": "^0.21.0",
-    "typescript-eslint": "^8.54.0",
-    "vite-plugin-minify": "^2.1.0"
+    "typescript-eslint": "^8.54.0"
   },
   "scripts": {
     "dev": "vite",

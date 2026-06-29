@@ -1,6 +1,5 @@
 // vite.config.js
 import { defineConfig } from 'vite';
-import { ViteMinifyPlugin } from "vite-plugin-minify";
 
 import fs from 'fs/promises';
 import path from "path";
@@ -26,7 +25,7 @@ export default defineConfig(async () => {
 
   return {
     root: "./app/",
-    plugins: [ViteMinifyPlugin()],
+    plugins: [],
     build: {
       outDir: "dist",
       manifest: true,
