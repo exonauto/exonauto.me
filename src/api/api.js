@@ -37,6 +37,11 @@ api.get('/blogs', (req, res) => {
   res.json(blogs);
 })
 
+api.get('/neo/blogs.js', (req, res) => {
+  res.type('application/javascript');
+  res.send(`window.blogs = ${JSON.stringify(blogs)};`);
+});
+
 const recentViews = new Map();
 
 api.get('/views', (req, res) => {
@@ -54,6 +59,12 @@ api.get('/views', (req, res) => {
 
   res.json({'views': blogs.totalViews});
 });
+
+api.get('/neo/views.js', (req, res) => {
+  res.type('application/javascript');
+  res.send(`window.views = ${blogs.totalViews};`);
+})
+
 api.use(authentication)
 
 api.get('/images',  async (req, res) => {
