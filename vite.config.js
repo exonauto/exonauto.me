@@ -26,6 +26,13 @@ export default defineConfig(async () => {
   return {
     root: "./app/",
     plugins: [],
+    server:{
+      proxy: {
+        '/api': {
+          target: 'http://localhost:3001', // @todo bugged process.env.PORT,
+        },  
+      }
+    },
     build: {
       outDir: "dist",
       manifest: true,

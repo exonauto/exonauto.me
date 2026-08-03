@@ -15,6 +15,16 @@ async function listImages() {
   return entries.filter(entry => !entry.isDirectory());
 }
 
+let saveTimeout = 0;
+function scheduleSave() {
+  if (saveTimeout) return;
+
+  saveTimeout = setTimeout(() => {
+    saveBlogs();
+    saveTimeout = null;
+  }, 5000);
+}
+
 const api = express.Router()
 
 api.get('/me', (req, res) => {
@@ -23,16 +33,32 @@ api.get('/me', (req, res) => {
   });
 });
 
+api.get('/blogs', (req, res) => {
+  res.json(blogs);
+})
 
+const recentViews = new Map();
+
+api.get('/views', (req, res) => {
+  const ip = req.ip;
+  const now = Date.now();
+
+  const lastView = recentViews.get(ip);
+
+  if (!lastView || now - lastView > 60 * 60 * 1000) {
+    blogs.totalViews = (blogs.totalViews ?? 0) + 1;
+    recentViews.set(ip, now);
+
+    scheduleSave();
+  }
+
+  res.json({'views': blogs.totalViews});
+});
 api.use(authentication)
 
 api.get('/images',  async (req, res) => {
   res.json( await listImages());
 });
-
-api.get('/blogs', (req, res) => {
-  res.json(blogs)
-})
 
 api.delete('/blog/:id', (req, res) => {
   try {

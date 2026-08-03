@@ -27,64 +27,48 @@
     <meta name="twitter:description" content="ExonAuto's personal website">
     <meta name="twitter:image" content="https://exonauto.me/images/exonauto_web.png">
 
-    <link href="/css/general.css" rel="stylesheet">
-    <link href="/css/retro.css" rel="stylesheet">
+    <link href="/main.css" rel="stylesheet">
     <link rel="icon" type="image/x-icon" href="/images/favicon.ico">
   </head>
-  
-  <body>
-    <nav>
-      <div class="logo-container">
-        <img class="myProfileImg" style="width: 100px;" src="/images/favicon.png">
-      </div>
-      <h2>ExonAuto.me</h2>
-    </nav>
-    <section>
-      <div>
-        <br>
-        <p>
-          Hi, i'm ExonAuto, I'm currently pursing a major in Information Technology with a concentration in enterprise systems.
-          <br>
-          <br>
-          I like trying new things,
-          My main interests lies in programming (including making <a href="https://exonauto.itch.io">games</a>), cats, using blender, and editing videos, in that order.
-          <br>
-        </p>
 
-        <p>
-          You can see all my projects on <a href="https://github.com/exonauto">Github</a>
-        </p>
-        <p>
-        </p>
-      </div>
-      
-      <main>
-        <div style="text-align: center; margin-bottom: 100px;">
-          <h3>Projects</h3>
-          <hr>
-          <br>
-            <div>
-              <img src="/images/antichamber_thumb.png" class="inline">
-              <p>
-                <a href="https://exonauto.itch.io/antechamber/">
-                  Antechamber
-                </a><br>
-                Game made in 3 days with no game engine.
-              </p>
-            </div>
-            
-            <div>
-                <img src="/images/mathbunk_logo.png" class="inline">
-                <p>
-                  <a href="https://github.com/exonauto/MathBunk/">
-                    Mathbunk
-                  </a><br>
-                  A online learning platform that gamifies highschool level math.
-                </p>
-            </div>
+  <body>
+    <!-- <div class="mobile-warning"> -->
+      <!-- <h1>Hello, mobile user!</h1> -->
+    <!-- </div> -->
+    <div class="flex-align-content-center">
+      <div class="right-panel">
+        <div class="center-panel">
+          <p>
+            Hello! I'm ExonAuto, a 19 year old currently pursing a major in Information Technology with a concentration in enterprise systems.
+          </p>
+
+          <p>
+            My main interests lies in Hardware & Programming (including making <a href="https://exonauto.itch.io">games</a>), writing, using blender, and editing videos, in that order.
+          </p>
+          <p>
+            You can see all my tech projects on <a href="https://github.com/exonauto">Github</a>, and almost everything else will probably show up on my <a href="/blog">blog</a>
+          </p>
         </div>
-      </main>
-    </section>
+
+        <div id="blogs-mini" class="center-panel">
+          <h2>blogs</h2>
+        </div>
+      </div>
+
+      <div id="parallax" class="right-panel">
+        <div class="site-header">
+          <h2 id="header">ExonAuto.me - 0 visits</h2>
+        </div>
+
+        <div class="img-holder">
+          <img data-speed="2" class="img img-holder" width="100px" height="100px" src="/images/Illustration14-no-bg.png">
+          <h1 style="position: absolute; bottom: 0px; right: 0px;">Image by Qifwen</h1>
+        </div>
+      </div>
+    </div>
   </body>
-  <script src="/js/header.js"></script>
+
+  <script src="/js/parallax.js"></script>
+  <script type="module" src="/populateBlog.js"></script>
+  <script type="module" src="/neocities.js"></script>
 </html>
