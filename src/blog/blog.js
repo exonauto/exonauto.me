@@ -21,8 +21,10 @@ blog.get('/', async (req, res) => {
     
         for (let blogID in blogIDs) {
           blogID = blogIDs[blogID]
-    
           const blog = blogs[blogID]
+          
+          if (!blogID || typeof blog !== 'object') continue;
+
           blogsHtml += `
             <div id="${blogID}" class="blogSelection">
               <a href="/blog/${blogID}" style="cursor:pointer">${blog.title}</a>
