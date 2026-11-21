@@ -19,11 +19,11 @@
     "express": "^5.2.1",
     "express-session": "^1.18.0",
     "helmet": "^8.1.0",
-    "postreq": "^1.1.12",
     "satori": "^0.18.2",
     "satori-html": "^0.3.2",
     "serve-index": "^1.9.1",
     "skia-canvas": "^3.0.8",
+    "ua-parser-js": "^2.0.10",
     "vite": "^8.0.7"
   },
   "devDependencies": {

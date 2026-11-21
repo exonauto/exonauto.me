@@ -10,7 +10,7 @@ const __dirname = path.dirname(__filename);
 
 const blog = express.Router()
 
-// to do - store cache of html, dynamically update when new blog post?
+// todo: store cache of html, dynamically update when new blog post?
 blog.get('/', async (req, res) => {
     try {
         const templatePath = path.join(__dirname, '../../app/dist/pages/blog/index.html');
@@ -45,7 +45,7 @@ blog.get('/', async (req, res) => {
 
 blog.get('/:id', async (req, res) => {
     const blog = blogs[req.params.id];
-    if (!blog) return res.status(404).send('Not found... Whoops?');
+    if (!blog) return res.status(404).send('That blog wasn\'t found... Whoops?');
   
     try {
       const templatePath = path.join(__dirname, '../../app/dist/pages/blog/template.html');

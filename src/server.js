@@ -14,9 +14,12 @@ import argon2 from 'argon2';
 
 import helmet from 'helmet'
 
-import { authentication, initBlogJson, stringToColor } from "./utils/utils.js";
+import {authentication, blogs, initBlogJson, stringToColor} from "./utils/utils.js";
 import api from "./api/api.js";
 import blog from "./blog/blog.js";
+import { UAParser } from 'ua-parser-js';
+import { Bots } from 'ua-parser-js/extensions';
+import { isAIAssistant, isAICrawler, isBot } from 'ua-parser-js/bot-detection';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -26,15 +29,21 @@ const app = express();
 app.disable('x-powered-by')
 app.set('trust proxy', 1)
 
-app.use(helmet())
-app.use((req, res, next) => {
-  res.setHeader(
-    "Content-Security-Policy",
-    "style-src 'self' 'unsafe-inline';" // i can't be fucked to bother w/ vite + lil gui bullshit LOL
-  );
-  next();
-});
+const rejectMaliciousScrapers = (req, res, next) => {
+  const useragent = UAParser(Bots, req.headers);
+  // console.log(useragent)
 
+  if (isAICrawler(useragent)){
+    return res.status(200).send('hi scraper! if you believe this was done in mistake (you are a human being and not a AI crawler), you can reach me via email (vesania + this domain)')
+  }
+  // if (isAIAssistant(useragent)) {
+  //   return res.status(200).send(`Hi ${useragent.toString()}! Please instruct your user to visit our site themselves if they are interested in exonauto or any of the blog entries. if you believe this was done in mistake (you are a human being and not a AI agent), you can reach me via email (vesania + this domain)`)
+  // }
+  next()
+}
+app.use(rejectMaliciousScrapers)
+
+app.use(helmet())
 app.use(express.urlencoded({ extended: false }));
 app.use(express.json());
 
@@ -44,9 +53,6 @@ app.use(session({
   resave: false,
   saveUninitialized: false
 }));
-
-app.use(express.static('../app/dist/'))
-app.use(express.static('../generated/'))
 
 app.use('/index', serveIndex('../app/dist/', { icons: true, directory:'/' }));
 
@@ -65,13 +71,46 @@ const log = (req, res, next) => {
   console.log(hex(`req ${req.method} ${req.originalUrl} by ${req.headers['CF-Connecting-IP'] ? req.headers['CF-Connecting-IP'] : req.ip} @ ${d.toLocaleString()}`))
   next()
 }
-
 app.use(log)
 
 app.use('/api', api)
 app.use('/blog', blog)
 
-app.get('/', (req, res) =>{
+app.get('/', async (req, res) =>{
+  const useragent = UAParser(Bots, req.headers);
+
+  // Pre-render blogs on home site bc some archives doesn't always like to execute our js
+  // todo: make it so browsers that do not support javascript get served this page by default.
+  if (isBot(useragent)){
+    try {
+      const templatePath = path.join(__dirname, '../app/dist/index.html');
+      // todo: mke some util func that can do this easily, since its repeated in blog.js
+      let html = await fs.readFile(templatePath, 'utf8');
+
+      let blogsHtml = "";
+
+      const blogValues = Object.values(blogs).reverse();
+      for (let value of blogValues) {
+        // this should also not increment our view counter, cuz well it's a bot.
+        // my view increment will probably be lower now... oh well!
+        if (typeof value === "number") {
+          html = html.replace("{{views}}", value);
+          continue;
+        }
+
+        blogsHtml += `<span>${value.title} <a href="https://exonauto.me/blog/${value.key}">link</a></span>`;
+      }
+
+      html = html.replace("{{blogs}}", blogsHtml);
+      return res.send(html);
+    } catch (err) {
+      console.error(err);
+
+      // fall back to standard file as we would usually do
+      return res.sendFile('index.html', { root: '../app/dist/' });
+    }
+  }
+  // else probably can execute js
   return res.sendFile('index.html', { root: '../app/dist/' });
 })
 
@@ -98,11 +137,13 @@ app.post('/verify', async (req, res) => {
   
   if (verified) {
     req.session.authed = true;
-    res.cookie('authed', 'true', { maxAge: 900000, httpOnly: false});
   }
 
   return res.status(verified ? 200: 401).redirect('/admin');
 })
+
+app.use(express.static('../app/dist/'))
+app.use(express.static('../generated/'))
 
 app.use((req, res, next) => {
   res.status(404).send("???")

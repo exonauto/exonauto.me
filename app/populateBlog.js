@@ -4,6 +4,7 @@ async function fetchJson(url){
 }
 
 let prefix = '';
+
 async function init(){
     if (import.meta.env.DEV){
         prefix = ''
@@ -13,6 +14,11 @@ async function init(){
     const blogs = await fetchJson(prefix+'/api/blogs');
 
     const elm = document.getElementById('blogs-mini');
+    elm.innerText = "";
+    const h2 = document.createElement('h2')
+    h2.innerText = "Blogs"
+    elm.appendChild(h2)
+
     for (let blog of Object.values(blogs).reverse()){
         if (typeof blog === "number") continue;
         console.log(blog)
