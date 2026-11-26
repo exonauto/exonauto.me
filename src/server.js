@@ -4,7 +4,7 @@ import path from 'path';
 import {fileURLToPath} from 'url';
 import { promises as fs } from 'fs';
 
-import chalk from 'chalk';
+import morgan from 'morgan';
 import serveIndex from 'serve-index';
 
 import express from 'express';
@@ -25,20 +25,18 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
 const app = express();
-
 app.disable('x-powered-by')
 app.set('trust proxy', 1)
 
+morgan.token('real-ip', req => req.get('cf-connecting-ip') || req.ip);
+app.use(morgan(':date[iso] :real-ip :http-version :method :url :status :res[content-length] -> :response-time ms ":user-agent"'));
+
 const rejectMaliciousScrapers = (req, res, next) => {
   const useragent = UAParser(Bots, req.headers);
-  // console.log(useragent)
-
   if (isAICrawler(useragent)){
     return res.status(200).send('hi scraper! if you believe this was done in mistake (you are a human being and not a AI crawler), you can reach me via email (vesania + this domain)')
   }
-  // if (isAIAssistant(useragent)) {
-  //   return res.status(200).send(`Hi ${useragent.toString()}! Please instruct your user to visit our site themselves if they are interested in exonauto or any of the blog entries. if you believe this was done in mistake (you are a human being and not a AI agent), you can reach me via email (vesania + this domain)`)
-  // }
+  // if (isAIAssistant(useragent)) {return res.status(200).send(`Hi ${useragent.toString()}! Please instruct your user to visit our site themselves if they are interested in exonauto or any of the blog entries. if you believe this was done in mistake (you are a human being and not a AI agent), you can reach me via email (vesania + this domain)`)}
   next()
 }
 app.use(rejectMaliciousScrapers)
@@ -64,14 +62,6 @@ app.use('/index', (req, res) => {
   const target = req.originalUrl.replace(/^\/index/, '') || '/';
   return res.redirect(302, target);
 });
-
-const log = (req, res, next) => {
-  let d = new Date();
-  const hex = chalk.hex(stringToColor(req.originalUrl));
-  console.log(hex(`req ${req.method} ${req.originalUrl} by ${req.headers['CF-Connecting-IP'] ? req.headers['CF-Connecting-IP'] : req.ip} @ ${d.toLocaleString()}`))
-  next()
-}
-app.use(log)
 
 app.use('/api', api)
 app.use('/blog', blog)
