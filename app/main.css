@@ -139,3 +139,12 @@ p {
     object-fit: cover;
     overflow: visible !important;
 }
+
+@media (pointer:none), (pointer:coarse) {
+    p {
+        font-size: 1.5rem;
+    }
+    span {
+        font-size: 1.5rem;
+    }
+}
